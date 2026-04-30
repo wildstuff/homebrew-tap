@@ -1,9 +1,9 @@
 # Homebrew Formula for `wild`.
 #
 # This file is the canonical source — copy it into the
-# `Wildstuff/homebrew-wild` tap repo at `Formula/wild.rb` after
+# `Wildstuff/homebrew-tap` tap repo at `Formula/wild.rb` after
 # every wild release. The tap repo is separate from the-wild so
-# `brew install wildstuff/wild/wild` resolves correctly without
+# `brew install wildstuff/tap/wild` resolves correctly without
 # Homebrew having to clone the whole monorepo on every brew search.
 #
 # Variant: source build via `cargo install`. Slower install

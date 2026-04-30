@@ -1,11 +1,11 @@
-# homebrew-wild
+# homebrew-tap
 
 Homebrew tap for [`wild`](https://github.com/Wildstuff/the-wild) — multi-tribe LLM agent runtime.
 
 ## Install
 
 ```sh
-brew install wildstuff/wild/wild
+brew install wildstuff/tap/wild
 ```
 
 After install:
