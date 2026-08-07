@@ -45,9 +45,9 @@ class Wild < Formula
   # Both attributes are auto-bumped by `dawidd6/action-homebrew-bump-formula`
   # on every release. Keep them as simple `url`/`sha256` lines so the
   # action's regex parser finds them.
-  url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.4/wild-0.5.0-rc.4-aarch64-apple-darwin.tar.gz"
-  sha256   "72500adc207614fd28d233d95de936ba1a0557041fac415f67d2c1a2b8d94985"
-  version  "0.5.0-rc.4"
+  url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.5/wild-0.5.0-rc.5-aarch64-apple-darwin.tar.gz"
+  sha256   "c3d0979372c45aa038fee270f3a5cba5b36249ac235ccb23b787bb931669ba5a"
+  version  "0.5.0-rc.5"
 
   # Runtime, not build: wild-hostd execs nats-server from PATH unless a
   # bundled/downloaded one is found (ADR-0120 D11 bundles it into the
@@ -73,8 +73,8 @@ class Wild < Formula
   # bump-action populates each block on release.
   on_macos do
     on_arm do
-      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.4/wild-0.5.0-rc.4-aarch64-apple-darwin.tar.gz"
-      sha256   "72500adc207614fd28d233d95de936ba1a0557041fac415f67d2c1a2b8d94985"
+      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.5/wild-0.5.0-rc.5-aarch64-apple-darwin.tar.gz"
+      sha256   "c3d0979372c45aa038fee270f3a5cba5b36249ac235ccb23b787bb931669ba5a"
     end
     # Intel macOS dropped from the release matrix 2026-05-05 (per
     # `release.yml`'s comment block). Operators on Intel Macs build
@@ -84,8 +84,8 @@ class Wild < Formula
 
   on_linux do
     on_intel do
-      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.4/wild-0.5.0-rc.4-x86_64-unknown-linux-gnu.tar.gz"
-      sha256   "4a491ac95da36a6079b745fb4e120b426f66408bc08103629b2c7eac4957040f"
+      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.5/wild-0.5.0-rc.5-x86_64-unknown-linux-gnu.tar.gz"
+      sha256   "9a934fed3007af0b5993be76766e5442b78a503cfaf4b57129a4c9360a14f325"
     end
   end
 
