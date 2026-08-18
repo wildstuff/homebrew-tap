@@ -45,9 +45,28 @@ class Wild < Formula
   # Both attributes are auto-bumped by `dawidd6/action-homebrew-bump-formula`
   # on every release. Keep them as simple `url`/`sha256` lines so the
   # action's regex parser finds them.
+  #
+  # NO `version` stanza. The URL carries the version and Homebrew reads it
+  # from there, and a redundant stanza beside it does not merely duplicate —
+  # it BREAKS the bump, which is why every release cut since v0.5.0-rc.2 had
+  # to be tapped by hand (#5145).
+  #
+  # `brew bump-formula-pr` only rewrites a `version` stanza when it considers
+  # the version FORCED, and forced means "differs from what the URL says"
+  # (`fetch_resource_and_forced_version`). Ours never differs — the URL is
+  # honest — so the stanza is left untouched while the URL is bumped. Then
+  # the final check reads the version back out of the edited file, an
+  # explicit stanza outranks the URL, and the answer is the OLD version:
+  #
+  #   You need to bump this formula manually since the new version
+  #   and old version are both 0.5.0-rc.3.
+  #
+  # Which reads like a version-comparison bug and is not one. Homebrew orders
+  # `0.5.0-rc.3 < 0.5.0-rc.4` correctly and detects both from these asset
+  # names correctly (measured). It also has nothing to do with pre-releases:
+  # a `0.5.0 → 0.5.1` bump would have failed exactly the same way.
   url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.5/wild-0.5.0-rc.5-aarch64-apple-darwin.tar.gz"
   sha256   "c3d0979372c45aa038fee270f3a5cba5b36249ac235ccb23b787bb931669ba5a"
-  version  "0.5.0-rc.5"
 
   # Runtime, not build: wild-hostd execs nats-server from PATH unless a
   # bundled/downloaded one is found (ADR-0120 D11 bundles it into the
@@ -79,7 +98,11 @@ class Wild < Formula
     # Intel macOS dropped from the release matrix 2026-05-05 (per
     # `release.yml`'s comment block). Operators on Intel Macs build
     # from source via `brew install --HEAD wildstuff/tap/wild` or
-    # `cargo install --path crates/runtime/cli`.
+    # `cargo install --path crates/runtime/frontend` (+ `.../daemon`).
+    # The crate moved with the ADR-0036 frontend split; the old
+    # `crates/runtime/cli` path in this note had not existed for some
+    # time, so the one instruction an Intel operator was given here
+    # could not be followed.
   end
 
   on_linux do
@@ -154,7 +177,7 @@ class Wild < Formula
   test do
     # Smoke test — both binaries should print `--version` without a
     # daemon up. Keeps the formula honest if a future build accidentally
-    # hard-fails on a missing `~/.wild/`.
+    # hard-fails on a missing profile root.
     assert_match version.to_s, shell_output("#{bin}/wild --version")
     assert_match version.to_s, shell_output("#{bin}/wild-hostd --version")
   end
@@ -177,7 +200,9 @@ class Wild < Formula
         # 2. interactive `wild up` (laptops, demos)
         wild up                           # in-process; exits with the TUI
 
-      Profile state lives at ~/.wild/profiles/<active>/. The brew
+      Profile state lives under Wild's data root:
+      ~/Library/Application Support/Wild/profiles/<active>/ on macOS,
+      ~/.local/share/wild/profiles/<active>/ on Linux. The brew
       service uses your active profile by default; pin a different
       one by exporting WILD_PROFILE=<name> via
       `~/Library/LaunchAgents/homebrew.mxcl.wild.plist` (macOS) or
