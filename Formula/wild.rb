@@ -65,8 +65,8 @@ class Wild < Formula
   # `0.5.0-rc.3 < 0.5.0-rc.4` correctly and detects both from these asset
   # names correctly (measured). It also has nothing to do with pre-releases:
   # a `0.5.0 → 0.5.1` bump would have failed exactly the same way.
-  url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.5/wild-0.5.0-rc.5-aarch64-apple-darwin.tar.gz"
-  sha256   "c3d0979372c45aa038fee270f3a5cba5b36249ac235ccb23b787bb931669ba5a"
+  url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.7/wild-0.5.0-rc.7-aarch64-apple-darwin.tar.gz"
+  sha256   "38adbd0590cef23a4795d4eb872d716dd4416ff8dd945c55d922756e44a478d6"
 
   # Runtime, not build: wild-hostd execs nats-server from PATH unless a
   # bundled/downloaded one is found (ADR-0120 D11 bundles it into the
@@ -92,8 +92,8 @@ class Wild < Formula
   # bump-action populates each block on release.
   on_macos do
     on_arm do
-      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.5/wild-0.5.0-rc.5-aarch64-apple-darwin.tar.gz"
-      sha256   "c3d0979372c45aa038fee270f3a5cba5b36249ac235ccb23b787bb931669ba5a"
+      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.7/wild-0.5.0-rc.7-aarch64-apple-darwin.tar.gz"
+      sha256   "38adbd0590cef23a4795d4eb872d716dd4416ff8dd945c55d922756e44a478d6"
     end
     # Intel macOS dropped from the release matrix 2026-05-05 (per
     # `release.yml`'s comment block). Operators on Intel Macs build
@@ -107,8 +107,8 @@ class Wild < Formula
 
   on_linux do
     on_intel do
-      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.5/wild-0.5.0-rc.5-x86_64-unknown-linux-gnu.tar.gz"
-      sha256   "9a934fed3007af0b5993be76766e5442b78a503cfaf4b57129a4c9360a14f325"
+      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.7/wild-0.5.0-rc.7-x86_64-unknown-linux-gnu.tar.gz"
+      sha256   "a3c6b920ff33e12d000296d4c6acd7c628794d341cd4cb4bde47187d36c78459"
     end
   end
 
