@@ -1,23 +1,25 @@
-# Homebrew formula for `wild` — in-repo snapshot.
+# Homebrew formula for `wild` — the source the tap is rendered from.
 #
-# This file is the source of truth for the Wild brew formula. The
-# actual install path is `wildstuff/homebrew-tap` (a separate repo);
-# `release.yml`'s `dawidd6/action-homebrew-bump-formula` step pushes
-# version + sha256 updates over there on every release tag, but the
-# Ruby class shape itself lives here so reviews + history land in
-# the same place as the rest of the codebase.
+# This file is the SOURCE of the Wild brew formula. The install path is
+# `wildstuff/homebrew-tap` (a separate repo), and its `Formula/wild.rb` is
+# DERIVED from this one: on every release tag `release.yml` runs
+# `scripts/ci/render-brew-formula.py` over this file, filling each `url` +
+# `sha256` in from the tag and the checksums the build just wrote, and
+# opens the resulting formula as a pull request on the tap.
 #
-# When this file changes, copy the result into the tap repo's
-# `Formula/wild.rb`. Future iteration can teach the bump-action to
-# template from this file too; for now the action only updates the
-# `url` + `sha256` attributes.
+# So this is the only copy anyone edits. It was hand-mirrored into the tap
+# until #5145, where every cut from v0.5.0-rc.2 on failed its bump and the
+# tap was moved by hand — a second hand-maintained copy of anything is a
+# copy that drifts, and this one drifted two releases behind.
+#
+# The version pinned in the URLs below is a SPECIMEN, not state: the render
+# overwrites every one of them. It stays a real, resolvable release so the
+# file loads, audits and reads honestly on its own.
 #
 # URLs point at the PUBLIC distribution repo `wildstuff/wild`
 # (ADR-0225 D2): release assets inherit repo visibility, and the
 # development repo `the-wild` stays private by decision, so any URL
-# naming it 404s for the tap's audience. The bump-action's version
-# substitution + anonymous sha256 download only work against the
-# public repo.
+# naming it 404s for the tap's audience.
 #
 # Layout:
 #   - Tarball is downloaded from the GitHub Release matching the
@@ -42,29 +44,20 @@ class Wild < Formula
   homepage "https://github.com/wildstuff/wild"
   license "FSL-1.1-ALv2"
 
-  # Both attributes are auto-bumped by `dawidd6/action-homebrew-bump-formula`
-  # on every release. Keep them as simple `url`/`sha256` lines so the
-  # action's regex parser finds them.
+  # The DEFAULT tarball, used by any platform with no `on_*` block below —
+  # today that is Intel macOS, which the release matrix dropped and which is
+  # told to build from source (see the `on_macos` block). Every supported
+  # platform overrides this.
   #
-  # NO `version` stanza. The URL carries the version and Homebrew reads it
-  # from there, and a redundant stanza beside it does not merely duplicate —
-  # it BREAKS the bump, which is why every release cut since v0.5.0-rc.2 had
-  # to be tapped by hand (#5145).
+  # Keep `url` and `sha256` as adjacent, simple, one-line stanzas wherever
+  # they appear: `render-brew-formula.py` pairs each url with the `sha256`
+  # DIRECTLY beneath it, and that adjacency is what stops a platform from
+  # inheriting another platform's checksum.
   #
-  # `brew bump-formula-pr` only rewrites a `version` stanza when it considers
-  # the version FORCED, and forced means "differs from what the URL says"
-  # (`fetch_resource_and_forced_version`). Ours never differs — the URL is
-  # honest — so the stanza is left untouched while the URL is bumped. Then
-  # the final check reads the version back out of the edited file, an
-  # explicit stanza outranks the URL, and the answer is the OLD version:
-  #
-  #   You need to bump this formula manually since the new version
-  #   and old version are both 0.5.0-rc.3.
-  #
-  # Which reads like a version-comparison bug and is not one. Homebrew orders
-  # `0.5.0-rc.3 < 0.5.0-rc.4` correctly and detects both from these asset
-  # names correctly (measured). It also has nothing to do with pre-releases:
-  # a `0.5.0 → 0.5.1` bump would have failed exactly the same way.
+  # NO `version` stanza, here or in any block. The URL carries the version
+  # and Homebrew derives it from there; a redundant stanza beside a derived
+  # value does not merely duplicate, it OUTRANKS — the moment the two
+  # disagree, the stale one wins and the formula pins itself.
   url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.7/wild-0.5.0-rc.7-aarch64-apple-darwin.tar.gz"
   sha256   "38adbd0590cef23a4795d4eb872d716dd4416ff8dd945c55d922756e44a478d6"
 
@@ -87,9 +80,16 @@ class Wild < Formula
     depends_on "rust" => :build
   end
 
-  # Per-architecture asset selection. Brew's `on_*` macros rewrite
-  # `url`/`sha256` to the matching tarball at install time. The
-  # bump-action populates each block on release.
+  # Per-platform asset selection. Brew's `on_*` macros rewrite
+  # `url`/`sha256` to the matching tarball at install time, and there must
+  # be one block per target in `release.yml`'s build matrix — a missing one
+  # does not fail, it silently falls through to the default url above and
+  # hands that platform another platform's binaries. `wild-release-version`
+  # holds the test that keeps the two lists equal.
+  #
+  # These blocks are also why `brew bump-formula-pr` cannot maintain this
+  # formula and why we render it ourselves; the whole measurement is in
+  # `scripts/ci/render-brew-formula.py`.
   on_macos do
     on_arm do
       url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.7/wild-0.5.0-rc.7-aarch64-apple-darwin.tar.gz"
@@ -109,6 +109,14 @@ class Wild < Formula
     on_intel do
       url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.7/wild-0.5.0-rc.7-x86_64-unknown-linux-gnu.tar.gz"
       sha256   "a3c6b920ff33e12d000296d4c6acd7c628794d341cd4cb4bde47187d36c78459"
+    end
+    # ARM servers are a release target since 2026-08-11 and had no block
+    # here, so `brew install` on an arm64 Linux box fell through to the
+    # default url and unpacked the MACOS tarball — two Mach-O binaries with
+    # no error until the first exec.
+    on_arm do
+      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.7/wild-0.5.0-rc.7-aarch64-unknown-linux-gnu.tar.gz"
+      sha256   "6b2ae32ba17f0d6fa508beec78c780d13247000f9e2b657a731a32d43ab2957d"
     end
   end
 
