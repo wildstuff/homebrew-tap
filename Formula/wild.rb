@@ -60,8 +60,8 @@ class Wild < Formula
   # and Homebrew derives it from there; a redundant stanza beside a derived
   # value does not merely duplicate, it OUTRANKS — the moment the two
   # disagree, the stale one wins and the formula pins itself.
-  url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.25/wild-0.5.0-rc.25-aarch64-apple-darwin.tar.gz"
-  sha256   "caa23ef48f4f63020c139ae15f20e63a42548f5c401a3f3317e227fb4a76feac"
+  url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.26/wild-0.5.0-rc.26-aarch64-apple-darwin.tar.gz"
+  sha256   "3ea0df5cdc1793a8bca87c549dfdf8e951abd71e329cd6a2c5b3e27f50e1d3df"
 
   # Runtime, not build: wild-hostd execs nats-server from PATH unless a
   # bundled/downloaded one is found (ADR-0120 D11 bundles it into the
@@ -94,8 +94,8 @@ class Wild < Formula
   # `scripts/ci/render-brew-formula.py`.
   on_macos do
     on_arm do
-      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.25/wild-0.5.0-rc.25-aarch64-apple-darwin.tar.gz"
-      sha256   "caa23ef48f4f63020c139ae15f20e63a42548f5c401a3f3317e227fb4a76feac"
+      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.26/wild-0.5.0-rc.26-aarch64-apple-darwin.tar.gz"
+      sha256   "3ea0df5cdc1793a8bca87c549dfdf8e951abd71e329cd6a2c5b3e27f50e1d3df"
     end
     # Intel macOS is NOT a supported target. It left the release matrix on
     # 2026-05-05 — Apple stopped selling Intel Macs in late 2023 and macOS
@@ -119,16 +119,16 @@ class Wild < Formula
 
   on_linux do
     on_intel do
-      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.25/wild-0.5.0-rc.25-x86_64-unknown-linux-gnu.tar.gz"
-      sha256   "b360ce7890ffe9f193224507467b1de3fceee63d3e81aa661f6ba7195446ce4c"
+      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.26/wild-0.5.0-rc.26-x86_64-unknown-linux-gnu.tar.gz"
+      sha256   "6033ba21d7e622e9c0056495fa82ddb3788cf536076082b1c76dd87c8d827437"
     end
     # ARM servers are a release target since 2026-08-11 and had no block
     # here, so `brew install` on an arm64 Linux box fell through to the
     # default url and unpacked the MACOS tarball — two Mach-O binaries with
     # no error until the first exec.
     on_arm do
-      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.25/wild-0.5.0-rc.25-aarch64-unknown-linux-gnu.tar.gz"
-      sha256   "38ccf4c9e0a5d05f3098161cc647d2d4ef06793eb7ce23352e7fba6a5f4be761"
+      url      "https://github.com/wildstuff/wild/releases/download/v0.5.0-rc.26/wild-0.5.0-rc.26-aarch64-unknown-linux-gnu.tar.gz"
+      sha256   "9e3ef359093d5ec51d6c39578fa19508665badf3875258fa1fe7ade86abc30a1"
     end
   end
 
